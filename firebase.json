@@ -1,0 +1,37 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "subway-enforcement-app",
+          "appId": "1:338204188518:android:38f208fab6e7e20a9ef2a7",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "subway-enforcement-app",
+          "configurations": {
+            "android": "1:338204188518:android:38f208fab6e7e20a9ef2a7",
+            "web": "1:338204188518:web:777ed5640b0f93759ef2a7",
+            "windows": "1:338204188518:web:bbe3750d4017c8099ef2a7"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+      
+    }
+  ]
+}

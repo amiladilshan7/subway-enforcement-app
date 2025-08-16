@@ -1,0 +1,28 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# Flutter/Dart
+/build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+
+# IDE files
+.idea/
+.vscode/
+
+# Sensitive files
+# This is important for the Google services file
+/android/app/google-services.json
+/ios/Runner/GoogleService-Info.plist
