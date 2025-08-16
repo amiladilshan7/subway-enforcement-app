@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../models/incident_report.dart';
 import 'widgets/violator_found_view.dart';
 import 'widgets/add_violator_form.dart';
+import '../services/sms_service.dart';
 
 class RecordIncidentScreen extends StatefulWidget {
   const RecordIncidentScreen({super.key});
@@ -18,6 +19,7 @@ class _RecordIncidentScreenState extends State<RecordIncidentScreen> {
   final _addressController = TextEditingController();
   final _mobileController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final SmsService _smsService = SmsService();
 
   QueryDocumentSnapshot? _violatorSnapshot;
   List<IncidentReport> _incidentReports = [];
@@ -73,16 +75,25 @@ class _RecordIncidentScreenState extends State<RecordIncidentScreen> {
   Future<void> _updateFineStatus(String incidentId) async {
     _setLoading(true);
     try {
-      final fineDoc = await _fines
+      final fineDocQuery = await _fines
           .where('incident_id', isEqualTo: incidentId)
           .limit(1)
           .get();
-      if (fineDoc.docs.isEmpty) return;
+      if (fineDocQuery.docs.isEmpty) return;
 
-      await _fines.doc(fineDoc.docs.first.id).update({
+      final fineDoc = fineDocQuery.docs.first;
+      final fineData = fineDoc.data() as Map<String, dynamic>;
+
+      await _fines.doc(fineDoc.id).update({
         'payment_status': 'Paid',
         'payment_date': Timestamp.now(),
       });
+
+      final fineAmount = (fineData['amount'] as num).toDouble();
+      _smsService.sendPaymentConfirmationSms(
+        _violatorSnapshot!['mobile_number'],
+        fineAmount,
+      );
 
       _showSnack('Fine status updated to PAID.', color: Colors.green);
       await _fetchIncidents(_violatorSnapshot!.id);
@@ -219,6 +230,10 @@ class _RecordIncidentScreenState extends State<RecordIncidentScreen> {
             DateTime.now().add(const Duration(days: 14)),
           ),
         });
+        _smsService.sendFineNotificationSms(
+          _violatorSnapshot!['mobile_number'],
+          amount,
+        );
       }
 
       _showSnack('New $status has been recorded.', color: Colors.green);
